@@ -58,6 +58,7 @@ SI1145_RAM_CHLIST = const(0x01)
 
 class SI1145:
     """Driver for the SI1145 UV, IR, Visible Light Sensor."""
+
     def __init__(self, i2c, address=SI1145_DEFAULT_ADDRESS):
         self._i2c = i2c_device.I2CDevice(i2c, address)
         dev_id, dev_rev, dev_seq = self.device_info
@@ -89,7 +90,7 @@ class SI1145:
         self._als_enabled = enable
 
     @property
-    def ALS(self):
+    def als(self):
         """A two tuple of the Ambient Light System (ALS) visible and infrared raw sensor values."""
         self._send_command(SI1145_CMD_ALS_FORCE)
         data = self._read_register(SI1145_ALS_VIS_DATA0, 4)

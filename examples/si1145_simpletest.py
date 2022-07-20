@@ -16,6 +16,6 @@ si1145 = adafruit_si1145.SI1145(i2c)
 
 # loop forever printing values
 while True:
-    vis, ir = si1145.ALS
+    vis, ir = si1145.als
     print("Visible = {}, Infrared = {}".format(vis, ir))
     time.sleep(1)
