@@ -16,19 +16,14 @@ Implementation Notes
 
 **Hardware:**
 
-.. todo:: Add links to any specific hardware product page(s), or category page(s).
-  Use unordered list & hyperlink rST inline format: "* `Link Text <url>`_"
+* `Adafruit SI1145 Digital UV Index / IR / Visible Light Sensor <https://www.adafruit.com/product/1777>`_
 
 **Software and Dependencies:**
 
 * Adafruit CircuitPython firmware for the supported boards:
   https://circuitpython.org/downloads
 
-.. todo:: Uncomment or remove the Bus Device and/or the Register library dependencies
-  based on the library's use of either.
-
-# * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
-# * Adafruit's Register library: https://github.com/adafruit/Adafruit_CircuitPython_Register
+* Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
 
 import time
@@ -51,7 +46,7 @@ SI1145_PARAM_RD = const(0x2E)
 
 # Commands (for COMMAND register)
 SI1145_CMD_PARAM_QUERY = const(0b10000000)
-SI1145_CMD_PARAM_SET =   const(0b10100000)
+SI1145_CMD_PARAM_SET = const(0b10100000)
 SI1145_CMD_NOP = const(0b00000000)
 SI1145_CMD_RESET = const(0b00000001)
 SI1145_CMD_ALS_FORCE = const(0b00000110)
@@ -59,48 +54,53 @@ SI1145_CMD_ALS_FORCE = const(0b00000110)
 # RAM Parameter Offsets (use with PARAM_QUERY / PARAM_SET)
 SI1145_RAM_CHLIST = const(0x01)
 
-class SI1145:
 
+class SI1145:
     def __init__(self, i2c, address=SI1145_DEFAULT_ADDRESS):
         self._i2c = i2c_device.I2CDevice(i2c, address)
-        id, rev, seq = self.device_info
-        if id != 69 or rev != 0 or seq != 8:
+        dev_id, dev_rev, dev_seq = self.device_info
+        if dev_id != 69 or dev_rev != 0 or dev_seq != 8:
             raise RuntimeError("Failed to find SI1145.")
         self.reset()
         self._write_register(SI1145_HW_KEY, 0x17)
         self._als_enabled = True
-        self.als_enabled = True
+        self.ALS_enabled = True
 
     @property
     def device_info(self):
+        """A three tuple of part, revision, and sequencer ID"""
         return tuple(self._read_register(SI1145_PART_ID, 3))
 
     @property
-    def als_enabled(self):
+    def ALS_enabled(self):
+        """The Ambient Light System enabled state."""
         return self._als_enabled
 
-    @als_enabled.setter
-    def als_enabled(self, enable):
-        current = self._param_query(SI1145_RAM_CHLIST)
+    @ALS_enabled.setter
+    def ALS_enabled(self, enable):
+        chlist = self._param_query(SI1145_RAM_CHLIST)
         if enable:
-            current |= 0b00110000
+            chlist |= 0b00110000
         else:
-            current &= ~0b00110000
-        self._param_set(SI1145_RAM_CHLIST, current)
+            chlist &= ~0b00110000
+        self._param_set(SI1145_RAM_CHLIST, chlist)
         self._als_enabled = enable
 
     @property
-    def als(self):
+    def ALS(self):
+        """A two tuple of the Ambient Light System (ALS) visible and infrared raw sensor values."""
         self._send_command(SI1145_CMD_ALS_FORCE)
         data = self._read_register(SI1145_ALS_VIS_DATA0, 4)
         return struct.unpack("HH", data)
 
     def reset(self):
+        """Perform a software reset of the firmware."""
         self._send_command(SI1145_CMD_RESET)
-        time.sleep(0.05) # doubling 25ms datasheet spec
+        time.sleep(0.05)  # doubling 25ms datasheet spec
 
-    def nop(self):
-        self._send_command(SI1145_CMD_NOP )
+    def clear_error(self):
+        """Clear any existing error code."""
+        self._send_command(SI1145_CMD_NOP)
 
     def _param_query(self, param):
         self._send_command(SI1145_CMD_PARAM_QUERY | (param & 0x1F))
@@ -113,8 +113,8 @@ class SI1145:
     def _send_command(self, command):
         counter = self._read_register(SI1145_RESPONSE) & 0x0F
         self._write_register(SI1145_COMMAND, command)
-        if command == SI1145_CMD_NOP or command == SI1145_CMD_RESET:
-            return
+        if command in (SI1145_CMD_NOP, SI1145_CMD_RESET):
+            return 0
         response = self._read_register(SI1145_RESPONSE)
         while counter == response & 0x0F:
             if response & 0xF0:
@@ -126,12 +126,10 @@ class SI1145:
         buffer = bytearray(length)
         with self._i2c as i2c:
             i2c.write_then_readinto(bytes([register]), buffer)
-        return buffer[0] if length==1 else buffer
+        return buffer[0] if length == 1 else buffer
 
     def _write_register(self, register, buffer):
         if isinstance(buffer, int):
             buffer = bytes([buffer])
         with self._i2c as i2c:
             i2c.write(bytes([register]) + buffer)
-
-
