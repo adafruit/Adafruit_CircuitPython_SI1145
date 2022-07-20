@@ -16,7 +16,8 @@ Implementation Notes
 
 **Hardware:**
 
-* `Adafruit SI1145 Digital UV Index / IR / Visible Light Sensor <https://www.adafruit.com/product/1777>`_
+* `Adafruit SI1145 Digital UV Index / IR / Visible Light Sensor
+   <https://www.adafruit.com/product/1777>`_
 
 **Software and Dependencies:**
 
@@ -56,6 +57,7 @@ SI1145_RAM_CHLIST = const(0x01)
 
 
 class SI1145:
+    """Driver for the SI1145 UV, IR, Visible Light Sensor."""
     def __init__(self, i2c, address=SI1145_DEFAULT_ADDRESS):
         self._i2c = i2c_device.I2CDevice(i2c, address)
         dev_id, dev_rev, dev_seq = self.device_info
@@ -64,7 +66,7 @@ class SI1145:
         self.reset()
         self._write_register(SI1145_HW_KEY, 0x17)
         self._als_enabled = True
-        self.ALS_enabled = True
+        self.als_enabled = True
 
     @property
     def device_info(self):
@@ -72,12 +74,12 @@ class SI1145:
         return tuple(self._read_register(SI1145_PART_ID, 3))
 
     @property
-    def ALS_enabled(self):
+    def als_enabled(self):
         """The Ambient Light System enabled state."""
         return self._als_enabled
 
-    @ALS_enabled.setter
-    def ALS_enabled(self, enable):
+    @als_enabled.setter
+    def als_enabled(self, enable):
         chlist = self._param_query(SI1145_RAM_CHLIST)
         if enable:
             chlist |= 0b00110000
