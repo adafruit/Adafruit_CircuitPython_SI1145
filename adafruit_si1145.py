@@ -16,7 +16,7 @@ Implementation Notes
 
 **Hardware:**
 
-* `Adafruit SI1145 Digital UV Index / IR / Visible Light Sensor
+* `Adafruit SI1145 Digital UV Index, IR, Visible Light Sensor
    <https://www.adafruit.com/product/1777>`_
 
 **Software and Dependencies:**
