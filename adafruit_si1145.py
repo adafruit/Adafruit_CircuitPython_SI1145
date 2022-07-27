@@ -64,7 +64,7 @@ class SI1145:
     """Driver for the SI1145 UV, IR, Visible Light Sensor."""
 
     _device_info = Struct(SI1145_PART_ID, "<BBB")
-    _ucoeff_0 = Struct(_COEFF_0, "<B")  # TODO: const(coeff)
+    _ucoeff_0 = Struct(_COEFF_0, "<B")
     _ucoeff_1 = Struct(_COEFF_1, "<B")
     _ucoeff_2 = Struct(_COEFF_2, "<B")
     _ucoeff_3 = Struct(_COEFF_3, "<B")
