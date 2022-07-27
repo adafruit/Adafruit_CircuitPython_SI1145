@@ -26,6 +26,8 @@ Table of Contents
 
 .. toctree::
     :caption: Related Products
+    
+    SI1145 Digital UV Index / IR / Visible Light Sensor <https://www.adafruit.com/product/1777>
 
 .. toctree::
     :caption: Other Links
