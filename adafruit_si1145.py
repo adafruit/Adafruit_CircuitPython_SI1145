@@ -124,10 +124,10 @@ class SI1145:
         self._param_set(_RAM_CHLIST, chlist)
         self._als_enabled = enable
 
-        self._ucoeff_0 = 0x29,
-        self._ucoeff_1 = 0x89,
-        self._ucoeff_2 = 0x02,
-        self._ucoeff_3 = 0x00,
+        self._ucoeff_0 = (0x29,)
+        self._ucoeff_1 = (0x89,)
+        self._ucoeff_2 = (0x02,)
+        self._ucoeff_3 = (0x00,)
 
         self._uv_index_enabled = enable
 
