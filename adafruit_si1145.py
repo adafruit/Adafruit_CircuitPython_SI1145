@@ -118,20 +118,23 @@ class SI1145:
     def uv_index_enabled(self, enable):
         chlist = self._param_query(_RAM_CHLIST)
         if enable:
-            chlist |= 0b01000000
+            chlist |= 0b10000000
         else:
-            chlist &= ~0b01000000
+            chlist &= ~0b10000000
         self._param_set(_RAM_CHLIST, chlist)
         self._als_enabled = enable
 
-        self._ucoeff_0 = 0x00
-        self._ucoeff_1 = 0x02
-        self._ucoeff_2 = 0x89
-        self._ucoeff_3 = 0x29
+        self._ucoeff_0 = 0x29,
+        self._ucoeff_1 = 0x89,
+        self._ucoeff_2 = 0x02,
+        self._ucoeff_3 = 0x00,
+
+        self._uv_index_enabled = enable
 
     @property
     def uv_index(self):
         """The UV Index value"""
+        self._send_command(_CMD_ALS_FORCE)
         return self._aux_data[0] / 100
 
     def reset(self):
