@@ -12,7 +12,7 @@ requires = [
 [project]
 name = "adafruit-circuitpython-si1145"
 description = "CircuitPython helper library for the SI1145 Digital UV Index IR Visible Light Sensor"
-version = "0.0.0-auto.0"
+version = "0.0.0+auto.0"
 readme = "README.rst"
 authors = [
     {name = "Adafruit Industries", email = "circuitpython@adafruit.com"}
