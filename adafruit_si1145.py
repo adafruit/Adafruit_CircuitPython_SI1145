@@ -162,7 +162,7 @@ class SI1145:
         response = self._read_register(_RESPONSE)
         while counter == response & 0x0F:
             if response & 0xF0:
-                raise RuntimeError("SI1145 Error: 0x{:02x}".format(response & 0xF0))
+                raise RuntimeError("SI1145 Error: 0x{:02x}".format(response))
             response = self._read_register(_RESPONSE)
         return response
 
