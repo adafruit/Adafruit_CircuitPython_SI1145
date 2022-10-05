@@ -82,7 +82,7 @@ following command to install:
 
 .. code-block:: shell
 
-    circup install si1145
+    circup install adafruit_si1145
 
 Or the following command to update an existing version:
 
