@@ -33,7 +33,6 @@ from adafruit_register.i2c_struct import Struct
 
 try:
     from typing import Tuple, Union
-    from circuitpython_typing import ReadableBuffer
     from busio import I2C
 except ImportError:
     pass
@@ -179,7 +178,9 @@ class SI1145:
             i2c.write_then_readinto(bytes([register]), buffer)
         return buffer[0] if length == 1 else buffer
 
-    def _write_register(self, register: int, buffer: ReadableBuffer) -> None:
+    def _write_register(
+        self, register: int, buffer: Union[int, bytes, bytearray]
+    ) -> None:
         if isinstance(buffer, int):
             buffer = bytes([buffer])
         with self.i2c_device as i2c:
