@@ -31,6 +31,12 @@ from micropython import const
 from adafruit_bus_device import i2c_device
 from adafruit_register.i2c_struct import Struct
 
+try:
+    from typing import Tuple, Union
+    from busio import I2C
+except ImportError:
+    pass
+
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_SI1145.git"
 
@@ -71,7 +77,7 @@ class SI1145:
     _als_data = Struct(_ALS_VIS_DATA0, "<HH")
     _aux_data = Struct(_UV_INDEX_DATA0, "<H")
 
-    def __init__(self, i2c, address=_DEFAULT_ADDRESS):
+    def __init__(self, i2c: I2C, address: int = _DEFAULT_ADDRESS) -> None:
         self.i2c_device = i2c_device.I2CDevice(i2c, address)
         dev_id, dev_rev, dev_seq = self.device_info
         if dev_id != 69 or dev_rev != 0 or dev_seq != 8:
@@ -84,17 +90,17 @@ class SI1145:
         self.uv_index_enabled = self._uv_index_enabled
 
     @property
-    def device_info(self):
+    def device_info(self) -> Tuple[int, int, int]:
         """A three tuple of part, revision, and sequencer ID"""
         return self._device_info
 
     @property
-    def als_enabled(self):
+    def als_enabled(self) -> bool:
         """The Ambient Light System enabled state."""
         return self._als_enabled
 
     @als_enabled.setter
-    def als_enabled(self, enable):
+    def als_enabled(self, enable: bool) -> None:
         chlist = self._param_query(_RAM_CHLIST)
         if enable:
             chlist |= 0b00110000
@@ -104,18 +110,18 @@ class SI1145:
         self._als_enabled = enable
 
     @property
-    def als(self):
+    def als(self) -> Tuple[int, int]:
         """A two tuple of the Ambient Light System (ALS) visible and infrared raw sensor values."""
         self._send_command(_CMD_ALS_FORCE)
         return self._als_data
 
     @property
-    def uv_index_enabled(self):
+    def uv_index_enabled(self) -> bool:
         """The UV Index system enabled state"""
         return self._uv_index_enabled
 
     @uv_index_enabled.setter
-    def uv_index_enabled(self, enable):
+    def uv_index_enabled(self, enable: bool) -> None:
         chlist = self._param_query(_RAM_CHLIST)
         if enable:
             chlist |= 0b10000000
@@ -132,29 +138,29 @@ class SI1145:
         self._uv_index_enabled = enable
 
     @property
-    def uv_index(self):
+    def uv_index(self) -> float:
         """The UV Index value"""
         self._send_command(_CMD_ALS_FORCE)
         return self._aux_data[0] / 100
 
-    def reset(self):
+    def reset(self) -> None:
         """Perform a software reset of the firmware."""
         self._send_command(_CMD_RESET)
         time.sleep(0.05)  # doubling 25ms datasheet spec
 
-    def clear_error(self):
+    def clear_error(self) -> None:
         """Clear any existing error code."""
         self._send_command(_CMD_NOP)
 
-    def _param_query(self, param):
+    def _param_query(self, param: int) -> int:
         self._send_command(_CMD_PARAM_QUERY | (param & 0x1F))
         return self._read_register(_PARAM_RD)
 
-    def _param_set(self, param, value):
+    def _param_set(self, param: int, value: int) -> None:
         self._write_register(_PARAM_WR, value)
         self._send_command(_CMD_PARAM_SET | (param & 0x1F))
 
-    def _send_command(self, command):
+    def _send_command(self, command: int) -> int:
         counter = self._read_register(_RESPONSE) & 0x0F
         self._write_register(_COMMAND, command)
         if command in (_CMD_NOP, _CMD_RESET):
@@ -162,17 +168,19 @@ class SI1145:
         response = self._read_register(_RESPONSE)
         while counter == response & 0x0F:
             if response & 0xF0:
-                raise RuntimeError("SI1145 Error: 0x{:02x}".format(response))
+                raise RuntimeError(f"SI1145 Error: {response:#x}")
             response = self._read_register(_RESPONSE)
         return response
 
-    def _read_register(self, register, length=1):
+    def _read_register(self, register: int, length: int = 1) -> Union[int, bytearray]:
         buffer = bytearray(length)
         with self.i2c_device as i2c:
             i2c.write_then_readinto(bytes([register]), buffer)
         return buffer[0] if length == 1 else buffer
 
-    def _write_register(self, register, buffer):
+    def _write_register(
+        self, register: int, buffer: Union[int, bytes, bytearray]
+    ) -> None:
         if isinstance(buffer, int):
             buffer = bytes([buffer])
         with self.i2c_device as i2c:
