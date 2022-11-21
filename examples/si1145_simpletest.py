@@ -9,7 +9,8 @@ import adafruit_si1145
 
 # setup I2C bus using board default
 # change as needed for specific boards
-i2c = board.I2C()
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
 # setup sensor
 si1145 = adafruit_si1145.SI1145(i2c)
