@@ -15,6 +15,10 @@ i2c = board.I2C()  # uses board.SCL and board.SDA
 # setup sensor
 si1145 = adafruit_si1145.SI1145(i2c)
 
+# set gains (1, 2, 4, 8, 16, 32, 64, 128)
+si1145.vis_gain = 16
+si1145.ir_gain = 16
+
 # loop forever printing values
 while True:
     vis, ir = si1145.als
