@@ -66,6 +66,46 @@ _CMD_ALS_FORCE = const(0b00000110)
 _RAM_CHLIST = const(0x01)
 
 
+# Gain Parameters
+_ALS_VIS_ADC_GAIN = const(0x11)
+_ALS_VIS_ADC_MISC = const(0x12)
+_ALS_IR_ADC_GAIN = const(0x1E)
+_ALS_IR_ADC_MISC = const(0x1F)
+
+
+# Gain technically increases integration time
+ALS_GAIN_DIV1 = const(0x00)
+ALS_GAIN_DIV2 = const(0x01)
+ALS_GAIN_DIV4 = const(0x02)
+ALS_GAIN_DIV8 = const(0x03)
+ALS_GAIN_DIV16 = const(0x04)
+ALS_GAIN_DIV32 = const(0x05)
+ALS_GAIN_DIV64 = const(0x06)
+ALS_GAIN_DIV128 = const(0x07)
+
+ALS_GAIN_VAL_MAP = {
+    1: ALS_GAIN_DIV1,
+    2: ALS_GAIN_DIV2,
+    4: ALS_GAIN_DIV4,
+    8: ALS_GAIN_DIV8,
+    16: ALS_GAIN_DIV16,
+    32: ALS_GAIN_DIV32,
+    64: ALS_GAIN_DIV64,
+    128: ALS_GAIN_DIV128,
+}
+
+ALS_GAIN_DIV_MAP = {
+    ALS_GAIN_DIV1: 1,
+    ALS_GAIN_DIV2: 2,
+    ALS_GAIN_DIV4: 4,
+    ALS_GAIN_DIV8: 8,
+    ALS_GAIN_DIV16: 16,
+    ALS_GAIN_DIV32: 32,
+    ALS_GAIN_DIV64: 64,
+    ALS_GAIN_DIV128: 128,
+}
+
+
 class SI1145:
     """Driver for the SI1145 UV, IR, Visible Light Sensor."""
 
@@ -142,6 +182,41 @@ class SI1145:
         """The UV Index value"""
         self._send_command(_CMD_ALS_FORCE)
         return self._aux_data[0] / 100
+
+
+    @property
+    def vis_gain(self) -> int:
+        div = self._param_query(_ALS_VIS_ADC_GAIN)
+        return ALS_GAIN_DIV_MAP[div]
+
+    @vis_gain.setter
+    def vis_gain(self, value: int) -> None:
+        assert value in ALS_GAIN_VAL_MAP.keys()
+        self._param_set(_ALS_VIS_ADC_GAIN, ALS_GAIN_VAL_MAP[value])
+
+
+    @property
+    def ir_gain(self) -> int:
+        div = self._param_query(_ALS_IR_ADC_GAIN)
+        return ALS_GAIN_DIV_MAP[div]
+
+    @ir_gain.setter
+    def ir_gain(self, value: int) -> None:
+        assert value in ALS_GAIN_VAL_MAP.keys()
+        self._param_set(_ALS_IR_ADC_GAIN, ALS_GAIN_VAL_MAP[value])
+
+
+    @property
+    def gain(self) -> Tuple[int, int]:
+        # return both vis and ir gains
+        return self.vis_gain, self.ir_gain
+
+    @gain.setter
+    def gain(self, value: int) -> None:
+        # set both vis and ir gains
+        self.vis_gain = value
+        self.ir_gain = value
+
 
     def reset(self) -> None:
         """Perform a software reset of the firmware."""
