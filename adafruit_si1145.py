@@ -126,8 +126,13 @@ class SI1145:
         self._write_register(_HW_KEY, 0x17)
         self._als_enabled = True
         self._uv_index_enabled = True
+        self._als_vis_range_high = False
+        self._als_ir_range_high = False
+
         self.als_enabled = self._als_enabled
         self.uv_index_enabled = self._uv_index_enabled
+        self.als_vis_range_high = self._als_vis_range_high
+        self.als_ir_range_high = self._als_ir_range_high
 
     @property
     def device_info(self) -> Tuple[int, int, int]:
@@ -216,6 +221,48 @@ class SI1145:
         # set both vis and ir gains
         self.vis_gain = value
         self.ir_gain = value
+
+
+    @property
+    def als_vis_range_high(self) -> bool:
+        return self._als_vis_range_high
+
+    @als_vis_range_high.setter
+    def als_vis_range_high(self, enable: bool) -> None:
+        vis_adc_misc = self._param_query(_ALS_VIS_ADC_MISC)
+        if enable:
+            vis_adc_misc |= 0b00100000
+        else:
+            vis_adc_misc &= ~0b00100000
+        self._param_set(_ALS_VIS_ADC_MISC, vis_adc_misc)
+        self._als_vis_range_high = enable
+
+
+    @property
+    def als_ir_range_high(self) -> bool:
+        return self._als_ir_range_high
+
+    @als_ir_range_high.setter
+    def als_ir_range_high(self, enable: bool) -> None:
+        ir_adc_misc = self._param_query(_ALS_IR_ADC_MISC)
+        if enable:
+            ir_adc_misc |= 0b00100000
+        else:
+            ir_adc_misc &= ~0b00100000
+        self._param_set(_ALS_IR_ADC_MISC, ir_adc_misc)
+        self._als_ir_range_high = enable
+
+
+    @property
+    def als_range_high(self) -> Tuple[bool, bool]:
+        # return both vis and ir range
+        return self._als_vis_range_high, self._als_ir_range_high
+
+    @als_range_high.setter
+    def als_range_high(self, enable: bool) -> None:
+        # set both vis and ir ranges
+        self.als_vis_range_high = enable
+        self.als_ir_range_high = enable
 
 
     def reset(self) -> None:
