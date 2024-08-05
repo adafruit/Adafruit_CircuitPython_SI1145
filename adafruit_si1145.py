@@ -192,6 +192,7 @@ class SI1145:
     @property
     def vis_gain(self) -> int:
         div = self._param_query(_ALS_VIS_ADC_GAIN)
+        div &= ~0b11111000
         return ALS_GAIN_DIV_MAP[div]
 
     @vis_gain.setter
@@ -203,6 +204,7 @@ class SI1145:
     @property
     def ir_gain(self) -> int:
         div = self._param_query(_ALS_IR_ADC_GAIN)
+        div &= ~0b11111000
         return ALS_GAIN_DIV_MAP[div]
 
     @ir_gain.setter
