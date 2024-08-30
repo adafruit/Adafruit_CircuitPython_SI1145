@@ -35,7 +35,19 @@ print('IR High range: {}'.format(str(si1145.als_ir_range_high)))
 print()
 
 
-for gain in (1, 2, 4, 8, 16, 32, 64, 128):
+gain_list = (
+    si1145.GAIN_ADC_CLOCK_DIV_1,
+    si1145.GAIN_ADC_CLOCK_DIV_2,
+    si1145.GAIN_ADC_CLOCK_DIV_4,
+    si1145.GAIN_ADC_CLOCK_DIV_8,
+    si1145.GAIN_ADC_CLOCK_DIV_16,
+    si1145.GAIN_ADC_CLOCK_DIV_32,
+    si1145.GAIN_ADC_CLOCK_DIV_64,
+    si1145.GAIN_ADC_CLOCK_DIV_128,
+)
+
+
+for gain in gain_list:
     si1145.gain = gain  # both gains
     #si1145.vis_gain = gain
     #si1145.ir_gain = gain

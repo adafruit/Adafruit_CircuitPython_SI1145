@@ -22,9 +22,20 @@ si1145 = adafruit_si1145.SI1145(i2c)
 #si1145.als_ir_range_high = True
 
 
-# set gains (1, 2, 4, 8, 16, 32, 64, 128)
-si1145.vis_gain = 16
-si1145.ir_gain = 16
+# Gain technically increases integration time
+# si1145.GAIN_ADC_CLOCK_DIV_1   (1x gain, default)
+# si1145.GAIN_ADC_CLOCK_DIV_2   (2x gain)
+# si1145.GAIN_ADC_CLOCK_DIV_4   (4x gain)
+# si1145.GAIN_ADC_CLOCK_DIV_8   (8x gain)
+# si1145.GAIN_ADC_CLOCK_DIV_16  (16x gain)
+# si1145.GAIN_ADC_CLOCK_DIV_32  (32x gain)
+# si1145.GAIN_ADC_CLOCK_DIV_64  (64x gain)
+# si1145.GAIN_ADC_CLOCK_DIV_128 (128x gain)
+
+
+si1145.gain = si1145.GAIN_ADC_CLOCK_DIV_16  # changes vis and ir gains
+#si1145.vis_gain = si1145.GAIN_ADC_CLOCK_DIV_16
+#si1145.ir_gain = si1145.GAIN_ADC_CLOCK_DIV_16
 
 
 # loop forever printing values

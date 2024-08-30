@@ -74,36 +74,14 @@ _ALS_IR_ADC_MISC = const(0x1F)
 
 
 # Gain technically increases integration time
-ALS_GAIN_DIV1 = const(0x00)
-ALS_GAIN_DIV2 = const(0x01)
-ALS_GAIN_DIV4 = const(0x02)
-ALS_GAIN_DIV8 = const(0x03)
-ALS_GAIN_DIV16 = const(0x04)
-ALS_GAIN_DIV32 = const(0x05)
-ALS_GAIN_DIV64 = const(0x06)
-ALS_GAIN_DIV128 = const(0x07)
-
-ALS_GAIN_VAL_MAP = {
-    1: ALS_GAIN_DIV1,
-    2: ALS_GAIN_DIV2,
-    4: ALS_GAIN_DIV4,
-    8: ALS_GAIN_DIV8,
-    16: ALS_GAIN_DIV16,
-    32: ALS_GAIN_DIV32,
-    64: ALS_GAIN_DIV64,
-    128: ALS_GAIN_DIV128,
-}
-
-ALS_GAIN_DIV_MAP = {
-    ALS_GAIN_DIV1: 1,
-    ALS_GAIN_DIV2: 2,
-    ALS_GAIN_DIV4: 4,
-    ALS_GAIN_DIV8: 8,
-    ALS_GAIN_DIV16: 16,
-    ALS_GAIN_DIV32: 32,
-    ALS_GAIN_DIV64: 64,
-    ALS_GAIN_DIV128: 128,
-}
+GAIN_ADC_CLOCK_DIV_1 = const(0x00)
+GAIN_ADC_CLOCK_DIV_2 = const(0x01)
+GAIN_ADC_CLOCK_DIV_4 = const(0x02)
+GAIN_ADC_CLOCK_DIV_8 = const(0x03)
+GAIN_ADC_CLOCK_DIV_16 = const(0x04)
+GAIN_ADC_CLOCK_DIV_32 = const(0x05)
+GAIN_ADC_CLOCK_DIV_64 = const(0x06)
+GAIN_ADC_CLOCK_DIV_128 = const(0x07)
 
 
 class SI1145:
@@ -188,25 +166,21 @@ class SI1145:
     @property
     def vis_gain(self) -> int:
         div = self._param_query(_ALS_VIS_ADC_GAIN)
-        div &= ~0b11111000
-        return ALS_GAIN_DIV_MAP[div]
+        return div & ~0b11111000
 
     @vis_gain.setter
     def vis_gain(self, value: int) -> None:
-        assert value in ALS_GAIN_VAL_MAP.keys()
-        self._param_set(_ALS_VIS_ADC_GAIN, ALS_GAIN_VAL_MAP[value])
+        self._param_set(_ALS_VIS_ADC_GAIN, value)
 
 
     @property
     def ir_gain(self) -> int:
         div = self._param_query(_ALS_IR_ADC_GAIN)
-        div &= ~0b11111000
-        return ALS_GAIN_DIV_MAP[div]
+        return div & ~0b11111000
 
     @ir_gain.setter
     def ir_gain(self, value: int) -> None:
-        assert value in ALS_GAIN_VAL_MAP.keys()
-        self._param_set(_ALS_IR_ADC_GAIN, ALS_GAIN_VAL_MAP[value])
+        self._param_set(_ALS_IR_ADC_GAIN, value)
 
 
     @property
