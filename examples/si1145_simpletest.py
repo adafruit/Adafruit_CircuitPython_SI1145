@@ -23,19 +23,19 @@ si1145 = adafruit_si1145.SI1145(i2c)
 
 
 # Gain technically increases integration time
-# si1145.GAIN_ADC_CLOCK_DIV_1   (1x gain, default)
-# si1145.GAIN_ADC_CLOCK_DIV_2   (2x gain)
-# si1145.GAIN_ADC_CLOCK_DIV_4   (4x gain)
-# si1145.GAIN_ADC_CLOCK_DIV_8   (8x gain)
-# si1145.GAIN_ADC_CLOCK_DIV_16  (16x gain)
-# si1145.GAIN_ADC_CLOCK_DIV_32  (32x gain)
-# si1145.GAIN_ADC_CLOCK_DIV_64  (64x gain)
-# si1145.GAIN_ADC_CLOCK_DIV_128 (128x gain)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_1   (1x gain, default)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_2   (2x gain)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_4   (4x gain)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_8   (8x gain)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_16  (16x gain)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_32  (32x gain)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_64  (64x gain)
+# adafruit_si1145.GAIN_ADC_CLOCK_DIV_128 (128x gain)
 
 
-si1145.gain = si1145.GAIN_ADC_CLOCK_DIV_16  # changes vis and ir gains
-#si1145.vis_gain = si1145.GAIN_ADC_CLOCK_DIV_16
-#si1145.ir_gain = si1145.GAIN_ADC_CLOCK_DIV_16
+si1145.gain = adafruit_si1145.GAIN_ADC_CLOCK_DIV_16  # changes vis and ir gains
+#si1145.vis_gain = adafruit_si1145.GAIN_ADC_CLOCK_DIV_16
+#si1145.ir_gain = adafruit_si1145.GAIN_ADC_CLOCK_DIV_16
 
 
 # loop forever printing values

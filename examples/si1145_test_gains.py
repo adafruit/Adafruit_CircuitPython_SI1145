@@ -36,14 +36,14 @@ print()
 
 
 gain_list = (
-    si1145.GAIN_ADC_CLOCK_DIV_1,
-    si1145.GAIN_ADC_CLOCK_DIV_2,
-    si1145.GAIN_ADC_CLOCK_DIV_4,
-    si1145.GAIN_ADC_CLOCK_DIV_8,
-    si1145.GAIN_ADC_CLOCK_DIV_16,
-    si1145.GAIN_ADC_CLOCK_DIV_32,
-    si1145.GAIN_ADC_CLOCK_DIV_64,
-    si1145.GAIN_ADC_CLOCK_DIV_128,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_1,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_2,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_4,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_8,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_16,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_32,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_64,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_128,
 )
 
 
