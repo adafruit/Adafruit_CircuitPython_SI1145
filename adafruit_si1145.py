@@ -87,6 +87,8 @@ GAIN_ADC_CLOCK_DIV_128 = const(0x07)
 class SI1145:
     """Driver for the SI1145 UV, IR, Visible Light Sensor."""
 
+    # pylint: disable=too-many-instance-attributes, maybe-no-member
+
     _device_info = Struct(_PART_ID, "<BBB")
     _ucoeff_0 = Struct(_COEFF_0, "<B")
     _ucoeff_1 = Struct(_COEFF_1, "<B")
@@ -162,9 +164,9 @@ class SI1145:
         self._send_command(_CMD_ALS_FORCE)
         return self._aux_data[0] / 100
 
-
     @property
     def vis_gain(self) -> int:
+        """Visible gain value"""
         div = self._param_query(_ALS_VIS_ADC_GAIN)
         return div & ~0b11111000
 
@@ -172,9 +174,9 @@ class SI1145:
     def vis_gain(self, value: int) -> None:
         self._param_set(_ALS_VIS_ADC_GAIN, value)
 
-
     @property
     def ir_gain(self) -> int:
+        """IR gain value"""
         div = self._param_query(_ALS_IR_ADC_GAIN)
         return div & ~0b11111000
 
@@ -182,9 +184,9 @@ class SI1145:
     def ir_gain(self, value: int) -> None:
         self._param_set(_ALS_IR_ADC_GAIN, value)
 
-
     @property
     def gain(self) -> Tuple[int, int]:
+        """Visble and IR gain values"""
         # return both vis and ir gains
         return self.vis_gain, self.ir_gain
 
@@ -194,9 +196,9 @@ class SI1145:
         self.vis_gain = value
         self.ir_gain = value
 
-
     @property
     def als_vis_range_high(self) -> bool:
+        """Visible high range value"""
         vis_adc_misc = self._param_query(_ALS_VIS_ADC_MISC)
         return bool((vis_adc_misc & ~0b11011111) >> 5)
 
@@ -209,9 +211,9 @@ class SI1145:
             vis_adc_misc &= ~0b00100000
         self._param_set(_ALS_VIS_ADC_MISC, vis_adc_misc)
 
-
     @property
     def als_ir_range_high(self) -> bool:
+        """IR high range value"""
         ir_adc_misc = self._param_query(_ALS_IR_ADC_MISC)
         return bool((ir_adc_misc & ~0b11011111) >> 5)
 
@@ -224,9 +226,9 @@ class SI1145:
             ir_adc_misc &= ~0b00100000
         self._param_set(_ALS_IR_ADC_MISC, ir_adc_misc)
 
-
     @property
     def als_range_high(self) -> Tuple[bool, bool]:
+        """Visbile and IR high range values"""
         # return both vis and ir range
         return self._als_vis_range_high, self._als_ir_range_high
 
@@ -235,7 +237,6 @@ class SI1145:
         # set both vis and ir ranges
         self.als_vis_range_high = enable
         self.als_ir_range_high = enable
-
 
     def reset(self) -> None:
         """Perform a software reset of the firmware."""
