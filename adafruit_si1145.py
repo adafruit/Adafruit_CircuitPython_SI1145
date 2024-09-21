@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2017 Scott Shawcroft, written for Adafruit Industries
 # SPDX-FileCopyrightText: Copyright (c) 2022 Carter Nelson for Adafruit Industries
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron W Morris (aaronwmorris)
 #
 # SPDX-License-Identifier: MIT
 """
@@ -66,8 +67,28 @@ _CMD_ALS_FORCE = const(0b00000110)
 _RAM_CHLIST = const(0x01)
 
 
+# Gain Parameters
+_ALS_VIS_ADC_GAIN = const(0x11)
+_ALS_VIS_ADC_MISC = const(0x12)
+_ALS_IR_ADC_GAIN = const(0x1E)
+_ALS_IR_ADC_MISC = const(0x1F)
+
+
+# Gain technically increases integration time
+GAIN_ADC_CLOCK_DIV_1 = const(0x00)
+GAIN_ADC_CLOCK_DIV_2 = const(0x01)
+GAIN_ADC_CLOCK_DIV_4 = const(0x02)
+GAIN_ADC_CLOCK_DIV_8 = const(0x03)
+GAIN_ADC_CLOCK_DIV_16 = const(0x04)
+GAIN_ADC_CLOCK_DIV_32 = const(0x05)
+GAIN_ADC_CLOCK_DIV_64 = const(0x06)
+GAIN_ADC_CLOCK_DIV_128 = const(0x07)
+
+
 class SI1145:
     """Driver for the SI1145 UV, IR, Visible Light Sensor."""
+
+    # pylint: disable=too-many-instance-attributes, maybe-no-member
 
     _device_info = Struct(_PART_ID, "<BBB")
     _ucoeff_0 = Struct(_COEFF_0, "<B")
@@ -86,6 +107,7 @@ class SI1145:
         self._write_register(_HW_KEY, 0x17)
         self._als_enabled = True
         self._uv_index_enabled = True
+
         self.als_enabled = self._als_enabled
         self.uv_index_enabled = self._uv_index_enabled
 
@@ -142,6 +164,80 @@ class SI1145:
         """The UV Index value"""
         self._send_command(_CMD_ALS_FORCE)
         return self._aux_data[0] / 100
+
+    @property
+    def vis_gain(self) -> int:
+        """Visible gain value"""
+        div = self._param_query(_ALS_VIS_ADC_GAIN)
+        return div & ~0b11111000
+
+    @vis_gain.setter
+    def vis_gain(self, value: int) -> None:
+        self._param_set(_ALS_VIS_ADC_GAIN, value)
+
+    @property
+    def ir_gain(self) -> int:
+        """IR gain value"""
+        div = self._param_query(_ALS_IR_ADC_GAIN)
+        return div & ~0b11111000
+
+    @ir_gain.setter
+    def ir_gain(self, value: int) -> None:
+        self._param_set(_ALS_IR_ADC_GAIN, value)
+
+    @property
+    def gain(self) -> Tuple[int, int]:
+        """Visble and IR gain values"""
+        # return both vis and ir gains
+        return self.vis_gain, self.ir_gain
+
+    @gain.setter
+    def gain(self, value: int) -> None:
+        # set both vis and ir gains
+        self.vis_gain = value
+        self.ir_gain = value
+
+    @property
+    def als_vis_range_high(self) -> bool:
+        """Visible high range value"""
+        vis_adc_misc = self._param_query(_ALS_VIS_ADC_MISC)
+        return bool((vis_adc_misc & ~0b11011111) >> 5)
+
+    @als_vis_range_high.setter
+    def als_vis_range_high(self, enable: bool) -> None:
+        vis_adc_misc = self._param_query(_ALS_VIS_ADC_MISC)
+        if enable:
+            vis_adc_misc |= 0b00100000
+        else:
+            vis_adc_misc &= ~0b00100000
+        self._param_set(_ALS_VIS_ADC_MISC, vis_adc_misc)
+
+    @property
+    def als_ir_range_high(self) -> bool:
+        """IR high range value"""
+        ir_adc_misc = self._param_query(_ALS_IR_ADC_MISC)
+        return bool((ir_adc_misc & ~0b11011111) >> 5)
+
+    @als_ir_range_high.setter
+    def als_ir_range_high(self, enable: bool) -> None:
+        ir_adc_misc = self._param_query(_ALS_IR_ADC_MISC)
+        if enable:
+            ir_adc_misc |= 0b00100000
+        else:
+            ir_adc_misc &= ~0b00100000
+        self._param_set(_ALS_IR_ADC_MISC, ir_adc_misc)
+
+    @property
+    def als_range_high(self) -> Tuple[bool, bool]:
+        """Visbile and IR high range values"""
+        # return both vis and ir range
+        return self._als_vis_range_high, self._als_ir_range_high
+
+    @als_range_high.setter
+    def als_range_high(self, enable: bool) -> None:
+        # set both vis and ir ranges
+        self.als_vis_range_high = enable
+        self.als_ir_range_high = enable
 
     def reset(self) -> None:
         """Perform a software reset of the firmware."""
