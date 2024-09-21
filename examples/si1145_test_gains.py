@@ -26,6 +26,11 @@ print()
 si1145.als_range_high = False  # both settings
 # si1145.als_vis_range_high = False
 # si1145.als_ir_range_high = False
+
+# Change above to True for High Signal Range mode.
+# High Signal Range mode divides gain by 14.5
+# Useful for direct sunlight operation
+
 time.sleep(0.5)
 
 # test reading attributes
@@ -35,14 +40,14 @@ print()
 
 
 gain_list = (
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_1,
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_2,
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_4,
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_8,
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_16,
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_32,
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_64,
-    adafruit_si1145.GAIN_ADC_CLOCK_DIV_128,
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_1,  # (1x gain, default)
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_2,  # (2x gain)
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_4,  # (4x gain)
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_8,  # (8x gain)
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_16,  # (16x gain)
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_32,  # (32x gain)
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_64,  # (64x gain)
+    adafruit_si1145.GAIN_ADC_CLOCK_DIV_128,  # (128x gain)
 )
 
 
