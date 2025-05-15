@@ -28,12 +28,14 @@ Implementation Notes
 """
 
 import time
-from micropython import const
+
 from adafruit_bus_device import i2c_device
 from adafruit_register.i2c_struct import Struct
+from micropython import const
 
 try:
     from typing import Tuple, Union
+
     from busio import I2C
 except ImportError:
     pass
@@ -87,8 +89,6 @@ GAIN_ADC_CLOCK_DIV_128 = const(0x07)
 
 class SI1145:
     """Driver for the SI1145 UV, IR, Visible Light Sensor."""
-
-    # pylint: disable=too-many-instance-attributes, maybe-no-member
 
     _device_info = Struct(_PART_ID, "<BBB")
     _ucoeff_0 = Struct(_COEFF_0, "<B")
@@ -259,7 +259,7 @@ class SI1145:
     def _send_command(self, command: int) -> int:
         counter = self._read_register(_RESPONSE) & 0x0F
         self._write_register(_COMMAND, command)
-        if command in (_CMD_NOP, _CMD_RESET):
+        if command in {_CMD_NOP, _CMD_RESET}:
             return 0
         response = self._read_register(_RESPONSE)
         while counter == response & 0x0F:
@@ -274,9 +274,7 @@ class SI1145:
             i2c.write_then_readinto(bytes([register]), buffer)
         return buffer[0] if length == 1 else buffer
 
-    def _write_register(
-        self, register: int, buffer: Union[int, bytes, bytearray]
-    ) -> None:
+    def _write_register(self, register: int, buffer: Union[int, bytes, bytearray]) -> None:
         if isinstance(buffer, int):
             buffer = bytes([buffer])
         with self.i2c_device as i2c:
