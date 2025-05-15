@@ -3,7 +3,9 @@
 # SPDX-License-Identifier: Unlicense
 
 import time
+
 import board
+
 import adafruit_si1145
 
 # setup I2C bus using board default
@@ -15,10 +17,10 @@ i2c = board.I2C()  # uses board.SCL and board.SDA
 si1145 = adafruit_si1145.SI1145(i2c)
 
 
-print("Default Vis Gain: {}".format(si1145.vis_gain))
-print("Default IR Gain: {}".format(si1145.ir_gain))
-print("Default Vis High range: {}".format(str(si1145.als_vis_range_high)))
-print("Default IR High range: {}".format(str(si1145.als_ir_range_high)))
+print(f"Default Vis Gain: {si1145.vis_gain}")
+print(f"Default IR Gain: {si1145.ir_gain}")
+print(f"Default Vis High range: {str(si1145.als_vis_range_high)}")
+print(f"Default IR High range: {str(si1145.als_ir_range_high)}")
 print()
 
 
@@ -34,8 +36,8 @@ si1145.als_range_high = False  # both settings
 time.sleep(0.5)
 
 # test reading attributes
-print("Vis High range: {}".format(str(si1145.als_vis_range_high)))
-print("IR High range: {}".format(str(si1145.als_ir_range_high)))
+print(f"Vis High range: {str(si1145.als_vis_range_high)}")
+print(f"IR High range: {str(si1145.als_ir_range_high)}")
 print()
 
 
@@ -57,12 +59,12 @@ for gain in gain_list:
     # si1145.ir_gain = gain
 
     # test reading attributes
-    print("Vis Gain: {}".format(si1145.vis_gain))
-    print("IR Gain: {}".format(si1145.ir_gain))
+    print(f"Vis Gain: {si1145.vis_gain}")
+    print(f"IR Gain: {si1145.ir_gain}")
 
     vis, ir = si1145.als
     uv_index = si1145.uv_index
-    print("Visible = {}, Infrared = {}, UV Index = {}".format(vis, ir, uv_index))
+    print(f"Visible = {vis}, Infrared = {ir}, UV Index = {uv_index}")
     print()
     time.sleep(0.5)
 
@@ -76,11 +78,11 @@ time.sleep(0.5)
 
 
 # test reading attributes
-print("Vis High range: {}".format(str(si1145.als_vis_range_high)))
-print("IR High range: {}".format(str(si1145.als_ir_range_high)))
+print(f"Vis High range: {str(si1145.als_vis_range_high)}")
+print(f"IR High range: {str(si1145.als_ir_range_high)}")
 print()
 
 
 vis, ir = si1145.als
 uv_index = si1145.uv_index
-print("Visible = {}, Infrared = {}, UV Index = {}".format(vis, ir, uv_index))
+print(f"Visible = {vis}, Infrared = {ir}, UV Index = {uv_index}")

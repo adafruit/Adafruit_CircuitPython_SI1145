@@ -5,12 +5,13 @@
 
 # Simple demo of the SI1145 UV sensor using a built-in display.
 import time
+
 import board
 from adafruit_display_text.bitmap_label import Label
-from terminalio import FONT
 from displayio import Group
-import adafruit_si1145
+from terminalio import FONT
 
+import adafruit_si1145
 
 # create a main_group to hold anything we want to show on the display.
 main_group = Group()

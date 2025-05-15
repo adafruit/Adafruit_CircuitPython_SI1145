@@ -4,7 +4,9 @@
 # SPDX-License-Identifier: Unlicense
 
 import time
+
 import board
+
 import adafruit_si1145
 
 # setup I2C bus using board default
@@ -18,5 +20,5 @@ si1145 = adafruit_si1145.SI1145(i2c)
 # loop forever printing values
 while True:
     vis, ir = si1145.als
-    print("Visible = {}, Infrared = {}".format(vis, ir))
+    print(f"Visible = {vis}, Infrared = {ir}")
     time.sleep(1)
